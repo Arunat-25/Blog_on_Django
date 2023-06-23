@@ -46,3 +46,4 @@ class Post(models.Model):
                              self.publish.day,
                              self.slug
                              ])
+def

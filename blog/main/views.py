@@ -1,8 +1,8 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from .models import Post
 #from django.http import Http404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from .forms import EmailPostForm
+from .forms import PostForm
 def post_list(request):
     post_lists = Post.published.all()
     # постраничная разбивка с 3 постами на старнице
@@ -45,20 +45,17 @@ def post_detail(request, year, month, day, post):
 
 
 def create(request):
-    pass
-
-
-def post_share(request, post_id):
-    post = get_object_or_404(Post,
-                             id=post_id,
-                             status=Post.Status.PUBLISHED)
+    error = ''
     if request.method == 'POST':
-        form = EmailPostForm(request.POST)
+        form = PostForm(request.POST)
         if form.is_valid():
-            cd = form.cleaned_data
-    else:
-        form = EmailPostForm()
+            form.save()
+            return redirect('main:post_list')
+        else:
+            error = 'Некорректно заполнено'
+
+    form = PostForm()
     return render(request,
-                  'main/post/share.html',
-                  {'post': post,
-                   'form': form})
+                  'main/post/create.html',
+                  {'form': form,
+                   'error': error})

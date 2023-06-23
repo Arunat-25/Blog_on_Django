@@ -3,6 +3,7 @@
 {% block title%} Мой блог {% endblock %}
 
 {% block content %}
+    <a href="{% url 'main:create' %}"><button>Добавить пост</button></a>
     {% for post in posts %}
         <h2>
             <a href = '{{ post.get_absolute_url }}'>

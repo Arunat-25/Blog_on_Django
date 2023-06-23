@@ -1,8 +1,19 @@
-from django import forms
+from .models import Post
+from django.forms import ModelForm, TextInput, Textarea
 
-class EmailPostForm(forms.Form):
-    name = forms.CharField(max_length=25)
-    email = forms.EmailField()
-    to = forms.EmailField()
-    comments = forms.CharField(required=False, #false делает так чтобы можно было ничего не писать в comments
-                               widget=forms.Textarea) #меняет поле на котором будем писать коммент
+class PostForm(ModelForm):
+    class Meta:
+        model = Post
+        fields = ['title', 'slug', 'author', 'body', 'publish', 'status']
+        prepopulated_fields = {'slug': ('title',)}
+        widgets = {
+            'title': TextInput(attrs={
+                'placeholder': 'Название'
+            }),
+            'slug': TextInput(attrs={
+                'placeholder': 'Слаг'
+            }),
+            'body': Textarea(attrs={
+                'placeholder': 'Текст'
+            })
+        }
