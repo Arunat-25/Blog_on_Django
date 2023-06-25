@@ -3,18 +3,20 @@
 {% block title%} Мой блог {% endblock %}
 
 {% block content %}
-    <a href="{% url 'main:create' %}"><button>Добавить пост</button></a>
     {% for post in posts %}
-        <h2>
-            <a href = '{{ post.get_absolute_url }}'>
-                {{ post.title }}
-            </a>
-        </h2>
-        <p class="date">
-            <i> Опубликован {{post.publish}}, пользователем {{ post.author }} </i>
-        </p>
-        <b>{{ post.body|truncatewords:30|linebreaks }}</b>
+        <div class="post-list">
+            <h2 class="post-name">
+                <a href = '{{ post.get_absolute_url }}'>
+                    {{ post.title }}
+                </a>
+            </h2>
+            <p class="date">
+                <i> Опубликован {{post.publish}}, пользователем {{ post.author }} </i>
+            </p>
+            <b>{{ post.body|truncatewords:30|linebreaks }}</b>
+        </div>
     {% endfor %}
     <br>
+    <a href="{% url 'main:create' %}"><button class="button1">Добавить пост</button></a> <br>
     {% include "pagination.html" with page=posts %}
 {% endblock %}
