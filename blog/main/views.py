@@ -1,8 +1,9 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Post
+from .models import Post, Comment
 #from django.http import Http404
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from .forms import PostForm
+from .forms import PostForm, CommentForm
+from django.views.decorators.http import require_POST
 def post_list(request):
     post_lists = Post.published.all()
     # постраничная разбивка с 3 постами на старнице
@@ -37,10 +38,15 @@ def post_detail(request, year, month, day, post):
                              slug=post,
                              publish__year=year,
                              publish__month=month,
-                             publish__day=day,)
+                             publish__day=day)
+    comments = post.comments.filter(active=True)
+    form = CommentForm()
+
     return render(request,
                   'main/post/detail.html',
-                  {'post': post})
+                  {'post': post,
+                   'comments': comments,
+                   'form': form})
 
 
 
@@ -59,3 +65,20 @@ def create(request):
                   'main/post/create.html',
                   {'form': form,
                    'error': error})
+
+
+@require_POST
+def post_comment(request, post_id):
+    post = get_object_or_404(Post,
+                             id=post_id,
+                             status=Post.Status.PUBLISHED)
+    comment = None
+    form = CommentForm(data=request.POST)
+    if form.is_valid():
+        comment = form.save(commit=False)
+        comment.post = post
+        comment.save()
+    return render(request, 'main/post/comment.html',
+                  {'post': post,
+                   'form': form,
+                   'comment': comment})

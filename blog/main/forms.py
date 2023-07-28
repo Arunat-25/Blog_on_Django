@@ -1,4 +1,4 @@
-from .models import Post
+from .models import Post, Comment
 from django.forms import ModelForm, TextInput, Textarea
 
 class PostForm(ModelForm):
@@ -17,3 +17,8 @@ class PostForm(ModelForm):
                 'placeholder': 'Текст'
             })
         }
+
+class CommentForm(ModelForm):
+    class Meta:
+        model = Comment
+        fields = ['name', 'email', 'body']

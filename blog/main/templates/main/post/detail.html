@@ -6,4 +6,16 @@
 <i><p class="date"> Опубликован {{post.publish}} пользователем {{post.author}}</p></i>
     <h2 class="post-name">{{post.title}}</h2>
     {{post.body|linebreaks}}
+    {% with comments.count as total_comments %}
+        <h2>{{total.comments }} Комментарии {{total_comments|pluralize}}</h2>
+    {%endwith%}
+    {%include 'main/post/comment_form.html'%}
+    {%for comment in comments %}
+        <div>
+            <p>Комментарий {{forloop.counter}} отправленный пользователем {{comment.name}}</p>
+            {{comment.body|linebreaks}}
+        </div>
+    {%empty%}
+            <p>Комментарии отсуствуют</p>
+    {%endfor%}
 {% endblock %}
